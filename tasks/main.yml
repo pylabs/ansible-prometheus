@@ -1,0 +1,42 @@
+---
+- block:
+  - name: create prometheus group account
+    group:
+      name: prometheus
+      state: present
+  - name: create prometheus user account
+    user:
+      name: prometheus
+      group: prometheus
+      state: present
+  - name: fetch prometheus tar file and extract it to destination
+    unarchive:
+      src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+      dest: "/tmp"
+  - name: move prometheus package to final destination
+    command:
+      cmd: "mv /tmp/prometheus-{{ prometheus_version }}.linux-amd64 {{ prometheus_base_dir }}"
+      creates: "{{ prometheus_base_dir }}"
+  - name: setup file permissions
+    file:
+      path: "{{ prometheus_base_dir }}"
+      state: directory
+      recurse: yes
+      owner: prometheus
+      group: prometheus
+      mode: "o-rwx"
+  - name: install prometheus systemd service file
+    template:
+      src: "prometheus.service"
+      dest: "/etc/systemd/system/prometheus.service"
+      owner: root
+      group: root
+      mode: "0644"
+  - name: setup prometheus systemd service
+    systemd:
+      name: "prometheus.service"
+      daemon_reload: yes
+      enabled: yes
+      state: started
+  tags:
+    - prometheus

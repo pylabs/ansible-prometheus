@@ -1,0 +1,13 @@
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Restart=on-failure
+ExecStart={{ prometheus_base_dir }}/prometheus --config.file={{ prometheus_base_dir }}/prometheus.yml --storage.tsdb.path={{ prometheus_base_dir }}/data
+
+[Install]
+WantedBy=multi-user.target
