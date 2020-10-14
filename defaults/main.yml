@@ -1,2 +1,4 @@
 ---
 prometheus_base_dir: "/opt/prometheus"
+prometheus_listen_address: "0.0.0.0"
+prometheus_listen_port: 9090
