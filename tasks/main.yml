@@ -16,6 +16,7 @@
     unarchive:
       src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
       dest: "/tmp"
+      remote_src: yes
   - name: move prometheus package to final destination
     command:
       cmd: "mv /tmp/prometheus-{{ prometheus_version }}.linux-amd64 {{ prometheus_base_dir }}"
